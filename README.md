@@ -21,6 +21,8 @@ DB 연동시(뒷부분에서 추가 예정)
 - MySQL Driver
 
 ## 개발내용 적기
+1일차 프로젝트 세팅
+![image](https://github.com/user-attachments/assets/e6469aef-3fdd-4ab8-82d5-da4b850b693b)
 
 
 ## table 정의
