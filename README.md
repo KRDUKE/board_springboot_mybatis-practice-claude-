@@ -63,7 +63,7 @@ Lombok의 @RequiredArgsConstructor 활용.
 ### 7. 컨트롤러 클래스 작성
 BoardController 생성.
 생성자 주입으로 BoardService 주입.
-5번쨰 영상
+## 5번쨰 영상
 BoardService에도 @RequiredArgsConstructor 추가.
 ### 1. 개요
 이번 작업에서는 게시글 작성 화면을 만드는 과정을 다룸.
