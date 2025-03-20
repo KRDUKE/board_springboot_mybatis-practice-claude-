@@ -1,4 +1,4 @@
-package com.dukefirstboard.board.board.board;
+package com.dukefirstboard.board.board.board.board;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
