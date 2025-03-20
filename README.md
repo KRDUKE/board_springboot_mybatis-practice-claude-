@@ -24,39 +24,46 @@ DB 연동시(뒷부분에서 추가 예정)
 1일차 프로젝트 세팅
 
 ![image](https://github.com/user-attachments/assets/e6469aef-3fdd-4ab8-82d5-da4b850b693b)
-
-2일차 
-2.시작 페이지출력과 devtools 적용
- 시작 페이지가 출력이 안되는 문제는 jdk 미설치 때문이었음
- devtools적용은 어떤 툴이냐에 따라 gradle에서 적용이 달라지므로 검색을 활용할것
-3.Controller, Service 클래스 만들어서 기본적인 기능 선언을 함
- 보드 패키지 내부에서 Service, DTO, repository 패키지를 만들고 각 클래스를 정의함
- DTO클래스: 보드 DTO
- 레퍼지토리 클래스: 보드 레퍼지토리
- 서비스 클래스: 보드 서비스
- 각 클래스에 어노테이션 추가
- 서비스 클래스에는 `@Service`
- 레퍼지토리 클래스에는 `@Repository`
-이후 롬복 설치와 의존성 추가
- DTO 클래스에 다음 필드 정의:
- 글번호
- 작성자
- 비밀번호
- 제목
- 내용
- 조회수
- 작성 시간
- 각 필드에 대해 롬복의 어노테이션 추가:
- 게터, 세터, 투 스트링
-6. 의존 관계 주입
- 컨트롤러 클래스는 서비스 클래스를, 서비스 클래스는 레퍼지토리 클래스를 활용해야 함.
- 의존 관계 주입 방식:
- 생성자 주입 사용
- 롬복의 `@RequiredArgsConstructor` 어노테이션 활용 [18]
-7. 컨트롤러 클래스 작성
- 보드 컨트롤러 클래스 생성.
- 생성자 주입 방식으로 서비스 클래스 주입.
- 서비스 클래스에도 `@RequiredArgsConstructor` 추가.
+## 2. 시작 페이지 출력과 DevTools 적용
+문제: 시작 페이지 출력 안 됨
+원인: JDK 미설치 Hannah: JDK가 설치되지 않아 발생.
+해결: Oracle JDK 24 설치 후 JAVA_HOME 환경 변수 설정.
+DevTools 적용
+Spring Boot DevTools를 프로젝트에 추가.
+개발 도구에 따라 Gradle 또는 Maven에서 의존성 추가 방식이 다름.
+검색을 통해 IDE별 적용 방법 확인 권장.
+### 3. Controller, Service, Repository 클래스 생성
+패키지 구조
+com.dukefirstboard.board 패키지 내에 하위 패키지 생성:
+controller
+service
+dto
+repository
+클래스 정의
+DTO 클래스: BoardDTO - 게시글 데이터 전송 객체.
+Repository 클래스: BoardRepository - 데이터베이스 상호작용 담당.
+Service 클래스: BoardService - 비즈니스 로직 처리.
+Controller 클래스: BoardController - HTTP 요청 처리.
+어노테이션 추가
+BoardService: @Service 추가.
+BoardRepository: @Repository 추가.
+### 4. Lombok 설치와 의존성 추가
+프로젝트에 Lombok 의존성 추가.
+IDE에서 Lombok 플러그인 설치 및 설정 활성화.
+### 5. DTO 클래스 정의
+BoardDTO에 필드 정의:
+글번호, 작성자, 비밀번호, 제목, 내용, 조회수, 작성 시간.
+Lombok 어노테이션 추가:
+@Getter, @Setter, @ToString 적용.
+### 6. 의존 관계 주입
+생성자 주입 방식으로 의존성 주입 설정.
+BoardController는 BoardService 주입.
+BoardService는 BoardRepository 주입.
+Lombok의 @RequiredArgsConstructor 활용.
+### 7. 컨트롤러 클래스 작성
+BoardController 생성.
+생성자 주입으로 BoardService 주입.
+BoardService에도 @RequiredArgsConstructor 추가.
 
 ## table 정의
 ```sql
