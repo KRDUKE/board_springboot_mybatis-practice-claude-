@@ -1,4 +1,4 @@
-package com.dukefirstboard.board.board.board.board.controller;
+package com.dukefirstboard.board.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

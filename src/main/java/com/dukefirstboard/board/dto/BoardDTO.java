@@ -1,4 +1,4 @@
-package com.dukefirstboard.board.board.board.board.dto;
+package com.dukefirstboard.board.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +10,7 @@ import lombok.ToString;
 public class BoardDTO {
     private Long id;//글번호
 
-    private String boardWiter;//작성자
+    private String boardWriter;//작성자
 
     private String boardPass;//게시글 비밀번호
 
