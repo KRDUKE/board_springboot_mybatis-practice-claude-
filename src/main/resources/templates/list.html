@@ -1,33 +1,57 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!-- HTML5 문서 선언, Thymeleaf 네임스페이스 추가로 동적 데이터 처리를 지원 -->
 <head>
     <meta charset="UTF-8">
+    <!-- 문자 인코딩을 UTF-8로 설정 -->
     <title>Title</title>
+    <!-- 페이지 제목: "Title"로 설정 (구체적인 제목 미지정) -->
     <style>
         table, tr, td, th {
             border: 1px solid black;
             border-collapse: collapse;
         }
+        <!-- 테이블 스타일: 검정 테두리 설정, 셀 간격 없애기 -->
         th, td {
             padding: 10px;
         }
+        <!-- 셀 내부 여백을 10px로 설정해 가독성 향상 -->
     </style>
+</head>
 <body>
+<!-- 글쓰기 링크와 게시글 목록 테이블 -->
 <a href="/save">글쓰기</a>
+<!-- 링크: "/save" 경로로 이동, 게시글 작성 페이지(save.html)를 열어줌 -->
 <table>
+    <!-- 테이블 헤더: 게시글 목록의 열 제목 -->
     <tr>
         <th>번호</th>
+        <!-- 게시글 ID 열 -->
         <th>제목</th>
+        <!-- 게시글 제목 열 -->
         <th>작성자</th>
+        <!-- 작성자 이름 열 -->
         <th>작성시간</th>
+        <!-- 작성 날짜 열 -->
         <th>조회수</th>
+        <!-- 조회수 열 -->
     </tr>
+    <!-- 게시글 목록을 동적으로 생성하는 행 -->
     <tr th:each="board: ${boardList}">
+        <!-- Thymeleaf 반복문: boardList의 각 BoardDTO를 순회 -->
         <td th:text="${board.id}"></td>
-        <td th:text="${board.boardTitle}"></td>
+        <!-- 게시글 ID 표시 -->
+        <td>
+            <a th:text="${board.boardTitle}" th:href="@{|/${board.id}|}"></a>
+            <!-- 제목을 링크로 표시: 클릭 시 "/{id}" 경로로 이동 (예: "/1") -->
+            <!-- th:text: 제목 텍스트, th:href: 상세 페이지 URL 동적 생성 -->
+        </td>
         <td th:text="${board.boardWriter}"></td>
+        <!-- 작성자 이름 표시 -->
         <td th:text="${board.createdAt}"></td>
+        <!-- 작성 날짜 표시 (예: "2025-04-01") -->
         <td th:text="${board.boardHits}"></td>
+        <!-- 조회수 표시 -->
     </tr>
 </table>
 </body>

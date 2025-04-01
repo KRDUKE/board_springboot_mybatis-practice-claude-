@@ -1,16 +1,26 @@
-# server port
+# server port 설정: 웹 서버가 사용할 포트 번호를 정의
 server:
-  port: 8080
+  port: 8080 # 애플리케이션이 실행될 포트 번호 (기본값 8080)
 
-# database
+# database 설정: Spring Boot에서 데이터베이스 연결을 구성
 spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
+  datasource: # 데이터 소스 설정 섹션
+    driver-class-name: com.mysql.cj.jdbc.Driver # MySQL JDBC 드라이버 클래스 이름
     url: jdbc:mysql://localhost:3306/db_board?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username:  root
-    password: 1234
+    # 데이터베이스 연결 URL
+    # - localhost:3306: MySQL 서버가 실행 중인 호스트와 포트
+    # - db_board: 사용할 데이터베이스 이름
+    # - serverTimezone: 시간대 설정 (서울 시간대)
+    # - characterEncoding: 문자 인코딩을 UTF-8로 설정
+    username: root # 데이터베이스 접속 사용자 이름
+    password: 1234 # 데이터베이스 접속 비밀번호
 
-# mybatis
+# mybatis 설정: MyBatis 프레임워크와의 통합을 구성
 mybatis:
   mapper-locations: classpath:mapper/*.xml
+  # MyBatis 매퍼 XML 파일의 위치
+  # - classpath: 프로젝트의 resources 디렉토리 기준
+  # - mapper/*.xml: "mapper" 폴더 내 모든 .xml 파일 (예: BoardMapper.xml)
   config-location: classpath:mybatis-config.xml
+  # MyBatis 설정 파일의 위치
+  # - mybatis-config.xml: MyBatis 전역 설정 파일 (선택적, 별도로 정의 필요)
