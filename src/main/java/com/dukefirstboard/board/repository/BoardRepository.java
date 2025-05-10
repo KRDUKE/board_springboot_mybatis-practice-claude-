@@ -2,12 +2,15 @@ package com.dukefirstboard.board.repository;
 
 import com.dukefirstboard.board.dto.BoardDTO;
 import com.dukefirstboard.board.dto.BoardFileDTO;
+import com.dukefirstboard.board.dto.PageDTO;
 import com.dukefirstboard.board.dto.SearchDTO;
 import lombok.RequiredArgsConstructor;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 // @Repository: 이 클래스가 Spring의 데이터 접근 계층(Repository)임을 나타냄.
 // Spring이 이 클래스를 빈으로 관리하며, 데이터베이스 작업을 처리.
@@ -103,5 +106,41 @@ public class BoardRepository {
      */
     public List<BoardDTO> search(SearchDTO searchDTO) {
         return sql.selectList("Board.search", searchDTO);
+    }
+
+    // 전체 게시글 수 조회
+    public long countAll() {
+        return sql.selectOne("Board.countAll");
+    }
+
+    // 카테고리별 게시글 수 조회
+    public long countByCategory(Long categoryId) {
+        return sql.selectOne("Board.countByCategory", categoryId);
+    }
+
+    // 검색 조건에 따른 게시글 수 조회
+    public long countBySearch(SearchDTO searchDTO) {
+        return sql.selectOne("Board.countBySearch", searchDTO);
+    }
+
+    // 게시글 목록 페이징 조회
+    public List<BoardDTO> findAllWithPaging(PageDTO pageDTO) {
+        return sql.selectList("Board.findAllWithPaging", pageDTO);
+    }
+
+    // 카테고리별 게시글 목록 페이징 조회
+    public List<BoardDTO> findByCategoryWithPaging(Long categoryId, PageDTO pageDTO) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("categoryId", categoryId);
+        params.put("page", pageDTO);
+        return sql.selectList("Board.findByCategoryWithPaging", params);
+    }
+
+    // 검색 조건에 따른 게시글 목록 페이징 조회
+    public List<BoardDTO> searchWithPaging(SearchDTO searchDTO, PageDTO pageDTO) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("search", searchDTO);
+        params.put("page", pageDTO);
+        return sql.selectList("Board.searchWithPaging", params);
     }
 }

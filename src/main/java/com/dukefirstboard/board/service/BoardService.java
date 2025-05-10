@@ -2,6 +2,7 @@ package com.dukefirstboard.board.service;
 
 import com.dukefirstboard.board.dto.BoardDTO;
 import com.dukefirstboard.board.dto.BoardFileDTO;
+import com.dukefirstboard.board.dto.PageDTO;
 import com.dukefirstboard.board.dto.SearchDTO;
 import com.dukefirstboard.board.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
@@ -133,6 +134,60 @@ public class BoardService {
         logger.debug("게시글 검색: searchType={}, keyword={}, categoryId={}",
                 searchDTO.getSearchType(), searchDTO.getSearchKeyword(), searchDTO.getCategoryId());
         return boardRepository.search(searchDTO);
+    }
+
+    /**
+     * 게시글 목록을 페이징 처리하여 조회
+     * @param pageDTO 페이지 정보
+     * @return 페이징된 게시글 목록
+     */
+    public List<BoardDTO> findAllWithPaging(PageDTO pageDTO) {
+        // 전체 게시글 수 조회
+        long totalElements = boardRepository.countAll();
+        pageDTO.setTotalElements(totalElements);
+        pageDTO.calculatePageInfo();
+
+        logger.debug("페이징 처리된 게시글 목록 조회: page={}, size={}, total={}",
+                pageDTO.getPage(), pageDTO.getSize(), totalElements);
+
+        return boardRepository.findAllWithPaging(pageDTO);
+    }
+
+    /**
+     * 카테고리별 게시글 목록을 페이징 처리하여 조회
+     * @param categoryId 카테고리 ID
+     * @param pageDTO 페이지 정보
+     * @return 페이징된 게시글 목록
+     */
+    public List<BoardDTO> findByCategoryWithPaging(Long categoryId, PageDTO pageDTO) {
+        // 카테고리별 게시글 수 조회
+        long totalElements = boardRepository.countByCategory(categoryId);
+        pageDTO.setTotalElements(totalElements);
+        pageDTO.calculatePageInfo();
+
+        logger.debug("카테고리별 페이징 처리된 게시글 목록 조회: categoryId={}, page={}, size={}, total={}",
+                categoryId, pageDTO.getPage(), pageDTO.getSize(), totalElements);
+
+        return boardRepository.findByCategoryWithPaging(categoryId, pageDTO);
+    }
+
+    /**
+     * 검색 조건에 따라 게시글을 페이징 처리하여 검색
+     * @param searchDTO 검색 조건
+     * @param pageDTO 페이지 정보
+     * @return 페이징된 검색 결과 게시글 목록
+     */
+    public List<BoardDTO> searchWithPaging(SearchDTO searchDTO, PageDTO pageDTO) {
+        // 검색 조건에 맞는 게시글 수 조회
+        long totalElements = boardRepository.countBySearch(searchDTO);
+        pageDTO.setTotalElements(totalElements);
+        pageDTO.calculatePageInfo();
+
+        logger.debug("검색 결과 페이징 처리: searchType={}, keyword={}, categoryId={}, page={}, size={}, total={}",
+                searchDTO.getSearchType(), searchDTO.getSearchKeyword(), searchDTO.getCategoryId(),
+                pageDTO.getPage(), pageDTO.getSize(), totalElements);
+
+        return boardRepository.searchWithPaging(searchDTO, pageDTO);
     }
 
 

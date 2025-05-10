@@ -136,4 +136,103 @@
         </if>
         ORDER BY b.id DESC
     </select>
+
+    <!-- 전체 게시글 수 조회 쿼리 -->
+    <select id="countAll" resultType="long">
+        SELECT COUNT(*) FROM board_table
+    </select>
+
+    <!-- 카테고리별 게시글 수 조회 쿼리 -->
+    <select id="countByCategory" parameterType="Long" resultType="long">
+        SELECT COUNT(*) FROM board_table WHERE category_id = #{categoryId}
+    </select>
+
+    <!-- 검색 조건에 따른 게시글 수 조회 쿼리 -->
+    <select id="countBySearch" parameterType="com.dukefirstboard.board.dto.SearchDTO" resultType="long">
+        SELECT COUNT(*) FROM board_table b
+        LEFT JOIN category c ON b.category_id = c.category_id
+        WHERE 1=1
+        <!-- 검색 조건에 따라 다른 WHERE 절 적용 -->
+        <if test="searchType != null and searchType != '' and searchKeyword != null and searchKeyword != ''">
+            <choose>
+                <when test="searchType == 'title'">
+                    AND b.boardTitle LIKE CONCAT('%', #{searchKeyword}, '%')
+                </when>
+                <when test="searchType == 'content'">
+                    AND b.boardContents LIKE CONCAT('%', #{searchKeyword}, '%')
+                </when>
+                <when test="searchType == 'writer'">
+                    AND b.boardWriter LIKE CONCAT('%', #{searchKeyword}, '%')
+                </when>
+                <when test="searchType == 'titleAndContent'">
+                    AND (b.boardTitle LIKE CONCAT('%', #{searchKeyword}, '%')
+                    OR b.boardContents LIKE CONCAT('%', #{searchKeyword}, '%'))
+                </when>
+            </choose>
+        </if>
+        <!-- 카테고리 필터링 (선택적) -->
+        <if test="categoryId != null and categoryId > 0">
+            AND b.category_id = #{categoryId}
+        </if>
+    </select>
+
+    <!-- 게시글 목록 페이징 조회 쿼리 -->
+    <select id="findAllWithPaging" parameterType="com.dukefirstboard.board.dto.PageDTO" resultType="board">
+        SELECT b.id, b.boardTitle, b.boardWriter, b.boardHits,
+               date_format(b.createdAt, "%Y-%m-%d") as createdAt,
+               b.fileAttached, b.category_id as categoryId,
+               c.category_name as categoryName
+        FROM board_table b
+                 LEFT JOIN category c ON b.category_id = c.category_id
+        ORDER BY b.id DESC
+        LIMIT #{size} OFFSET #{offset}
+    </select>
+
+    <!-- 카테고리별 게시글 목록 페이징 조회 쿼리 -->
+    <select id="findByCategoryWithPaging" parameterType="map" resultType="board">
+        SELECT b.id, b.boardTitle, b.boardWriter, b.boardHits,
+               date_format(b.createdAt, "%Y-%m-%d") as createdAt,
+               b.fileAttached, b.category_id as categoryId,
+               c.category_name as categoryName
+        FROM board_table b
+                 LEFT JOIN category c ON b.category_id = c.category_id
+        WHERE b.category_id = #{categoryId}
+        ORDER BY b.id DESC
+        LIMIT #{page.size} OFFSET #{page.offset}
+    </select>
+
+    <!-- 검색 조건에 따른 게시글 목록 페이징 조회 쿼리 -->
+    <select id="searchWithPaging" parameterType="map" resultType="board">
+        SELECT b.id, b.boardTitle, b.boardWriter, b.boardHits,
+        date_format(b.createdAt, "%Y-%m-%d") as createdAt,
+        b.fileAttached, b.category_id as categoryId,
+        c.category_name as categoryName
+        FROM board_table b
+        LEFT JOIN category c ON b.category_id = c.category_id
+        WHERE 1=1
+        <!-- 검색 조건에 따라 다른 WHERE 절 적용 -->
+        <if test="search.searchType != null and search.searchType != '' and search.searchKeyword != null and search.searchKeyword != ''">
+            <choose>
+                <when test="search.searchType == 'title'">
+                    AND b.boardTitle LIKE CONCAT('%', #{search.searchKeyword}, '%')
+                </when>
+                <when test="search.searchType == 'content'">
+                    AND b.boardContents LIKE CONCAT('%', #{search.searchKeyword}, '%')
+                </when>
+                <when test="search.searchType == 'writer'">
+                    AND b.boardWriter LIKE CONCAT('%', #{search.searchKeyword}, '%')
+                </when>
+                <when test="search.searchType == 'titleAndContent'">
+                    AND (b.boardTitle LIKE CONCAT('%', #{search.searchKeyword}, '%')
+                    OR b.boardContents LIKE CONCAT('%', #{search.searchKeyword}, '%'))
+                </when>
+            </choose>
+        </if>
+        <!-- 카테고리 필터링 (선택적) -->
+        <if test="search.categoryId != null and search.categoryId > 0">
+            AND b.category_id = #{search.categoryId}
+        </if>
+        ORDER BY b.id DESC
+        LIMIT #{page.size} OFFSET #{page.offset}
+    </select>
 </mapper>
