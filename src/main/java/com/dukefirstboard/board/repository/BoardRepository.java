@@ -2,6 +2,7 @@ package com.dukefirstboard.board.repository;
 
 import com.dukefirstboard.board.dto.BoardDTO;
 import com.dukefirstboard.board.dto.BoardFileDTO;
+import com.dukefirstboard.board.dto.SearchDTO;
 import lombok.RequiredArgsConstructor;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
@@ -93,5 +94,14 @@ public class BoardRepository {
      */
     public List<BoardDTO> findByCategory(Long categoryId) {
         return sql.selectList("Board.findByCategory", categoryId);
+    }
+
+    /**
+     * 검색 조건에 따라 게시글을 검색하는 메서드
+     * @param searchDTO 검색 조건 (검색 타입, 검색어, 카테고리 ID)
+     * @return 검색 결과 게시글 목록
+     */
+    public List<BoardDTO> search(SearchDTO searchDTO) {
+        return sql.selectList("Board.search", searchDTO);
     }
 }

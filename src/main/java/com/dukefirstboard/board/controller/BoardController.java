@@ -3,6 +3,7 @@ package com.dukefirstboard.board.controller;
 import com.dukefirstboard.board.dto.BoardDTO;
 import com.dukefirstboard.board.dto.BoardFileDTO;
 import com.dukefirstboard.board.dto.CategoryDTO;
+import com.dukefirstboard.board.dto.SearchDTO;
 import com.dukefirstboard.board.service.BoardService;
 import com.dukefirstboard.board.service.CategoryService;
 import lombok.RequiredArgsConstructor;
@@ -136,5 +137,46 @@ public class BoardController {
         logger.debug("게시글 삭제 요청: id={}", id);
         boardService.delete(id);
         return "redirect:/board/list";
+    }
+
+    /**
+     * 게시글 검색 기능
+     * @param searchType 검색 유형 (title, content, writer, titleAndContent)
+     * @param searchKeyword 검색 키워드
+     * @param categoryId 카테고리 ID (선택적)
+     * @param model 뷰에 데이터를 전달하기 위한 Model 객체
+     * @return 검색 결과 페이지
+     */
+    @GetMapping("/search")
+    public String search(@RequestParam(required = false) String searchType,
+                         @RequestParam(required = false) String searchKeyword,
+                         @RequestParam(required = false) Long categoryId,
+                         Model model) {
+        logger.debug("게시글 검색 요청: searchType={}, keyword={}, categoryId={}",
+                searchType, searchKeyword, categoryId);
+
+        // 검색 조건 객체 생성
+        SearchDTO searchDTO = new SearchDTO();
+        searchDTO.setSearchType(searchType);
+        searchDTO.setSearchKeyword(searchKeyword);
+        searchDTO.setCategoryId(categoryId);
+
+        // 검색 실행
+        List<BoardDTO> boardDTOList = boardService.search(searchDTO);
+        model.addAttribute("boardList", boardDTOList);
+
+        // 검색 조건을 모델에 추가 (폼에 검색어 유지)
+        model.addAttribute("searchType", searchType);
+        model.addAttribute("searchKeyword", searchKeyword);
+        model.addAttribute("selectedCategoryId", categoryId);
+
+        // 카테고리 목록을 모델에 추가 (네비게이션용)
+        List<CategoryDTO> categories = categoryService.findAll();
+        model.addAttribute("categories", categories);
+
+        // 검색 결과 수를 모델에 추가
+        model.addAttribute("resultCount", boardDTOList.size());
+
+        return "list";  // 목록 페이지 재사용
     }
 }

@@ -2,6 +2,7 @@ package com.dukefirstboard.board.service;
 
 import com.dukefirstboard.board.dto.BoardDTO;
 import com.dukefirstboard.board.dto.BoardFileDTO;
+import com.dukefirstboard.board.dto.SearchDTO;
 import com.dukefirstboard.board.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -121,6 +122,17 @@ public class BoardService {
     public List<BoardDTO> findByCategory(Long categoryId) {
         logger.debug("카테고리별 게시글 목록 조회: categoryId={}", categoryId);
         return boardRepository.findByCategory(categoryId);
+    }
+
+    /**
+     * 검색 조건에 따라 게시글을 검색하는 메서드
+     * @param searchDTO 검색 조건 (검색 타입, 검색어, 카테고리 ID)
+     * @return 검색 결과 게시글 목록
+     */
+    public List<BoardDTO> search(SearchDTO searchDTO) {
+        logger.debug("게시글 검색: searchType={}, keyword={}, categoryId={}",
+                searchDTO.getSearchType(), searchDTO.getSearchKeyword(), searchDTO.getCategoryId());
+        return boardRepository.search(searchDTO);
     }
 
 

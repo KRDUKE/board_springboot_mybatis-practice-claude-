@@ -225,3 +225,49 @@ footer {
     color: white;
     border-color: #3498db;
 }
+
+/* 검색 폼 스타일 */
+.search-form {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.search-form form {
+    display: flex;
+    align-items: center;
+}
+
+.search-form select,
+.search-form input {
+    margin-right: 10px;
+}
+
+.search-result {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+/* select 요소에 대한 스타일 */
+select.form-control {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+}
+
+/* 반응형 디자인을 위한 미디어 쿼리 (작은 화면에서 폼 레이아웃 변경) */
+@media (max-width: 768px) {
+    .search-form form {
+        flex-direction: column;
+    }
+
+    .search-form select,
+    .search-form input {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+}
