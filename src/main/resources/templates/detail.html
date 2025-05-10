@@ -1,103 +1,66 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<!-- HTML5 문서 선언, Thymeleaf 네임스페이스 추가로 동적 데이터 처리를 지원 -->
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <!-- 문자 인코딩을 UTF-8로 설정 -->
-    <title>detail</title>
-    <!-- 페이지 제목: "detail"로 설정 -->
-    <style>
-        table, tr, td, th {
-            border: 1px solid black;
-            border-collapse: collapse;
-        }
-        <!-- 테이블 스타일: 테두리를 검정선으로 설정하고, 셀 간격을 없애 깔끔하게 표시 -->
-        th, td {
-            padding: 10px;
-        }
-        <!-- 셀 내부 여백을 10px로 설정해 가독성 향상 -->
-    </style>
+    <title th:text="${board.boardTitle}">게시글 상세</title>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-<!-- 게시글 상세 정보를 테이블로 표시 -->
-<table>
-    <tr>
-        <th>id</th>
-        <!-- 테이블 헤더: 게시글 ID 라벨 -->
-        <td th:text="${board.id}"></td>
-        <!-- Thymeleaf로 BoardDTO의 id 값을 동적으로 표시 -->
-    </tr>
-    <tr>
-        <th>title</th>
-        <!-- 테이블 헤더: 게시글 제목 라벨 -->
-        <td th:text="${board.boardTitle}"></td>
-        <!-- BoardDTO의 boardTitle 값을 표시 -->
-    </tr>
-    <tr>
-        <th>writer</th>
-        <!-- 테이블 헤더: 작성자 라벨 -->
-        <td th:text="${board.boardWriter}"></td>
-        <!-- BoardDTO의 boardWriter 값을 표시 -->
-    </tr>
-    <tr>
-        <th>date</th>
-        <!-- 테이블 헤더: 작성 날짜 라벨 -->
-        <td th:text="${board.createdAt}"></td>
-        <!-- BoardDTO의 createdAt 값을 표시 (예: "2025-04-01 12:00:00") -->
-    </tr>
-    <tr>
-        <th>hits</th>
-        <!-- 테이블 헤더: 조회수 라벨 -->
-        <td th:text="${board.boardHits}"></td>
-        <!-- BoardDTO의 boardHits 값을 표시 -->
-    </tr>
-    <tr>
-        <th>contents</th>
-        <!-- 테이블 헤더: 내용 라벨 -->
-        <td th:text="${board.boardContents}"></td>
-        <!-- BoardDTO의 boardContents 값을 표시 -->
-    </tr>
-    <!-- 파일 첨부가 있는 경우에만 표시되는 행 -->
-    <tr th:if="${board.fileAttached == 1}">
-        <th>image</th>
-        <!-- 테이블 헤더: 첨부 이미지 라벨 -->
-        <td th:each="boardFile: ${boardFileList}">
-            <!-- Thymeleaf 반복문: boardFileList의 각 BoardFileDTO를 순회 -->
-            <img th:src="@{|/upload/${boardFile.storedFileName}|}" alt="" width="200" height="200">
-            <!-- 첨부 이미지 표시: /upload/ 경로와 저장된 파일명(storedFileName)을 조합해 src 속성 설정 -->
-            <!-- 크기: 가로 200px, 세로 200px로 고정 -->
-        </td>
-    </tr>
-</table>
+<div class="container">
+    <header>
+        <!-- 카테고리 정보 추가 -->
+        <div class="category-label" th:if="${board.categoryName != null}">
+            <span class="badge" th:text="${board.categoryName}"></span>
+        </div>
+        <h1 class="board-title" th:text="${board.boardTitle}">게시글 제목</h1>
+        <div class="board-info">
+            <span th:text="${board.boardWriter}">작성자</span> |
+            <span th:text="${board.createdAt}">작성일자</span> |
+            조회수: <span th:text="${board.boardHits}">0</span>
+        </div>
+    </header>
 
-<!-- 페이지 이동 버튼 -->
-<button onclick="listReq()">목록</button>
-<!-- "목록" 버튼: 클릭 시 listReq() 함수 호출 -->
-<button onclick="updateReq()">수정</button>
-<!-- "수정" 버튼: 클릭 시 updateReq() 함수 호출 -->
-<button onclick="deleteReq()">삭제</button>
-<!-- "삭제" 버튼: 클릭 시 deleteReq() 함수 호출 -->
+    <div class="board-content" th:text="${board.boardContents}">
+        게시글 내용이 여기에 표시됩니다.
+    </div>
 
+    <!-- 파일 첨부가 있는 경우에만 표시 -->
+    <div th:if="${board.fileAttached == 1}" class="board-files">
+        <h3>첨부 파일</h3>
+        <div th:each="boardFile: ${boardFileList}" class="file-item">
+            <img th:src="@{|/upload/${boardFile.storedFileName}|}" alt="첨부 이미지" width="200">
+            <p th:text="${boardFile.originalFileName}">파일명</p>
+        </div>
+    </div>
+
+    <div class="board-buttons">
+        <button onclick="listReq()" class="btn">목록</button>
+        <button onclick="updateReq()" class="btn btn-warning">수정</button>
+        <button onclick="deleteReq()" class="btn btn-danger">삭제</button>
+    </div>
+
+    <footer class="mt-3">
+        <p>&copy; 2025 게시판 애플리케이션</p>
+    </footer>
+</div>
 </body>
 <script th:inline="javascript">
-    <!-- Thymeleaf와 JavaScript를 결합하기 위해 inline 속성 사용 -->
-
-    // 목록 페이지로 이동하는 함수
     const listReq = () => {
-        location.href = "/list";
-        <!-- "/list" URL로 리다이렉트하여 게시글 목록 페이지로 이동 -->
+        // 이전 카테고리 페이지가 있었다면 그 페이지로 돌아가기
+        const categoryId = [[${board.categoryId}]];
+        if (categoryId) {
+            location.href = `/board/category/${categoryId}`;
+        } else {
+            location.href = "/board/list";
+        }
     }
 
-    // 수정 페이지로 이동하는 함수
     const updateReq = () => {
-        location.href = `/update/[[${board.id}]]`;
-        <!-- "/update/{id}" URL로 이동, board.id 값을 동적으로 삽입 (예: "/update/1") -->
+        location.href = `/board/update/[[${board.id}]]`;
     }
 
-    // 삭제 요청을 처리하는 함수
     const deleteReq = () => {
-        location.href = `/delete/[[${board.id}]]`;
-        <!-- "/delete/{id}" URL로 이동, board.id 값을 삽입해 삭제 요청 (예: "/delete/1") -->
+        location.href = `/board/delete/[[${board.id}]]`;
     }
 </script>
 </html>

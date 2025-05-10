@@ -1,24 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- XML 문서 선언, UTF-8 인코딩 설정 -->
 <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
-<!-- MyBatis 설정 파일의 DTD 정의, 버전 3.0 사용 -->
 
 <configuration>
-    <!-- MyBatis 설정의 루트 요소 -->
+    <!-- 설정 섹션 추가 -->
+    <settings>
+        <!-- 데이터베이스 컬럼명(user_id)과 자바 필드명(userId) 간 자동 매핑 -->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <!-- null 값을 처리하는 JDBC 타입 지정 -->
+        <setting name="jdbcTypeForNull" value="NULL"/>
+        <!-- 로깅 활성화 (선택사항) -->
+        <setting name="logImpl" value="SLF4J"/>
+    </settings>
 
     <typeAliases>
-        <!-- typeAliases: 클래스에 별칭을 지정하는 섹션 -->
-        <!-- 별칭을 사용하면 매퍼 XML에서 긴 클래스 경로 대신 간단한 이름을 사용할 수 있음 -->
-
         <typeAlias type="com.dukefirstboard.board.dto.BoardDTO" alias="board"/>
-        <!-- BoardDTO 클래스에 "board"라는 별칭을 지정 -->
-        <!-- type: 클래스의 전체 경로 -->
-        <!-- alias: 매퍼에서 사용할 짧은 이름 -->
-        <!-- 예: BoardMapper.xml에서 parameterType="board"로 사용 가능 -->
-
         <typeAlias type="com.dukefirstboard.board.dto.BoardFileDTO" alias="boardFile"/>
-        <!-- BoardFileDTO 클래스에 "boardFile"라는 별칭을 지정 -->
-        <!-- 매퍼에서 parameterType="boardFile" 또는 resultType="boardFile"로 사용 -->
+        <!-- User 클래스에 대한 별칭 추가 -->
+        <typeAlias type="com.dukefirstboard.board.entity.User" alias="user"/>
     </typeAliases>
 </configuration>

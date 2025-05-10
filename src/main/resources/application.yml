@@ -1,26 +1,54 @@
-# server port 설정: 웹 서버가 사용할 포트 번호를 정의
+# server port 설정
 server:
-  port: 8080 # 애플리케이션이 실행될 포트 번호 (기본값 8080)
+  port: 8080
+  error:
+    include-exception: true
+    include-stacktrace: always
+    include-message: always
+    whitelabel:
+      enabled: false  # 기본 오류 페이지 대신 직접 만든 오류 페이지 사용
 
-# database 설정: Spring Boot에서 데이터베이스 연결을 구성
+# Spring 설정
 spring:
-  datasource: # 데이터 소스 설정 섹션
-    driver-class-name: com.mysql.cj.jdbc.Driver # MySQL JDBC 드라이버 클래스 이름
-    url: jdbc:mysql://localhost:3306/db_board?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    # 데이터베이스 연결 URL
-    # - localhost:3306: MySQL 서버가 실행 중인 호스트와 포트
-    # - db_board: 사용할 데이터베이스 이름
-    # - serverTimezone: 시간대 설정 (서울 시간대)
-    # - characterEncoding: 문자 인코딩을 UTF-8로 설정
-    username: root # 데이터베이스 접속 사용자 이름
-    password: 1234 # 데이터베이스 접속 비밀번호
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 5MB
+      max-request-size: 10MB
+      file-size-threshold: 2KB
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/db_board_v2?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: 1234
+  security:
+    user:
+      name: admin
+      password: admin
+  # SQL 초기화 모드 설정 (이 부분이 로깅 설정 아래에 있어서 문제가 발생함)
+  sql:
+    init:
+      mode: always
 
-# mybatis 설정: MyBatis 프레임워크와의 통합을 구성
+# MyBatis 설정
 mybatis:
   mapper-locations: classpath:mapper/*.xml
-  # MyBatis 매퍼 XML 파일의 위치
-  # - classpath: 프로젝트의 resources 디렉토리 기준
-  # - mapper/*.xml: "mapper" 폴더 내 모든 .xml 파일 (예: BoardMapper.xml)
   config-location: classpath:mybatis-config.xml
-  # MyBatis 설정 파일의 위치
-  # - mybatis-config.xml: MyBatis 전역 설정 파일 (선택적, 별도로 정의 필요)
+
+# 로깅 설정
+logging:
+  level:
+    root: INFO  # 루트 로거 레벨
+    com.dukefirstboard.board: DEBUG  # 모든 프로젝트 클래스에 대해 DEBUG 레벨 설정
+    com.dukefirstboard.board.controller: DEBUG  # 컨트롤러에서 더 자세한 로깅
+    com.dukefirstboard.board.service: DEBUG  # 서비스 레이어에서 더 자세한 로깅
+    com.dukefirstboard.board.mapper: DEBUG  # Mapper (SQL) 로깅
+    org.springframework.security: DEBUG  # Spring Security 로깅
+    org.springframework.web: DEBUG  # Spring Web 로깅
+    org.hibernate.SQL: DEBUG  # SQL 쿼리 로깅 (JPA 사용시)
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE  # SQL 파라미터 로깅 (JPA 사용시)
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"  # 콘솔 로그 패턴
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"  # 파일 로그 패턴
+  file:
+    name: logs/application.log  # 로그 파일 위치

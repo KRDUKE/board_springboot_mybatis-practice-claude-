@@ -86,4 +86,12 @@ public class BoardRepository {
         // BoardMapper.xml의 <select id="findFile"> 쿼리와 연결됨.
         return sql.selectList("Board.findFile", id);
     }
+    /**
+     * 특정 카테고리의 게시글 목록을 조회하는 메서드
+     * @param categoryId 조회할 카테고리 ID
+     * @return 해당 카테고리의 게시글 목록
+     */
+    public List<BoardDTO> findByCategory(Long categoryId) {
+        return sql.selectList("Board.findByCategory", categoryId);
+    }
 }

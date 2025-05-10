@@ -35,3 +35,34 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Java ###
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+### Custom ###
+# 업로드 파일 저장 경로 (필요한 경우)
+/uploads/
+/testsave/
+
+# 애플리케이션 설정 (민감한 정보가 있는 경우)
+# 주의: application.yml/properties 자체는 제외하지 마세요!
+# 대신 application-dev.yml, application-prod.yml 같은 프로필별 설정을 제외할 수 있습니다
+application-*.yml
+application-*.properties
+
+# 운영체제 관련 파일
+.DS_Store
+Thumbs.db

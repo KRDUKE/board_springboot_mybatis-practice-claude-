@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>오류 발생</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="container">
+    <h1>오류가 발생했습니다</h1>
+    <div class="error-details">
+        <p><strong>상태:</strong> <span th:text="${status}">500</span></p>
+        <p><strong>오류:</strong> <span th:text="${error}">오류</span></p>
+        <p><strong>메시지:</strong> <span th:text="${message}">메시지</span></p>
+        <p><strong>경로:</strong> <span th:text="${path}">경로</span></p>
+    </div>
+    <div class="actions">
+        <a href="/" class="btn">홈으로 돌아가기</a>
+    </div>
+</div>
+</body>
+</html>

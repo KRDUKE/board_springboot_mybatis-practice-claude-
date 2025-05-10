@@ -1,39 +1,68 @@
 <!DOCTYPE html>
-<!-- HTML5 문서 선언 -->
-<html lang="en">
-<!-- 언어를 영어(en)로 설정한 HTML 루트 요소 -->
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <!-- 문자 인코딩을 UTF-8로 설정 -->
-    <title>Title</title>
-    <!-- 페이지 제목: "Title"로 설정 (구체적인 제목 미지정) -->
+    <title>게시글 작성</title>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-<!-- 게시글 작성 폼 -->
-<form action="/save" method="post" enctype="multipart/form-data">
-    <!-- action="/save": 데이터를 "/save" 경로로 POST 요청 -->
-    <!-- method="post": 데이터를 POST 방식으로 전송 -->
-    <!-- enctype="multipart/form-data": 파일 업로드를 지원하기 위한 인코딩 설정 -->
+<div class="container">
+    <header>
+        <h1>게시글 작성</h1>
+    </header>
 
-    제목: <input type="text" name="boardTitle"><br>
-    <!-- 제목 입력 필드: 사용자가 게시글 제목을 입력, name 속성은 BoardDTO의 boardTitle 필드와 매핑 -->
+    <div class="mb-3">
+        <a href="/" class="btn">홈으로</a>
+        <a href="/board/list" class="btn">목록으로</a>
+    </div>
 
-    작성자: <input type="text" name="boardWriter"><br>
-    <!-- 작성자 입력 필드: 작성자 이름을 입력, name 속성은 BoardDTO의 boardWriter 필드와 매핑 -->
+    <form action="/board/save" method="post" enctype="multipart/form-data">
+        <!-- 카테고리 선택 필드 추가 -->
+        <div class="form-group">
+            <label for="categoryId">카테고리</label>
+            <select id="categoryId" name="categoryId" class="form-control" required>
+                <option value="">카테고리 선택</option>
+                <option th:each="category : ${categories}"
+                        th:value="${category.categoryId}"
+                        th:text="${category.categoryName}">
+                </option>
+            </select>
+        </div>
 
-    비밀번호: <input type="text" name="boardPass"><br>
-    <!-- 비밀번호 입력 필드: 수정/삭제 시 인증용 비밀번호 입력, name 속성은 BoardDTO의 boardPass 필드와 매핑 -->
+        <div class="form-group">
+            <label for="boardTitle">제목</label>
+            <input type="text" id="boardTitle" name="boardTitle" class="form-control" required>
+        </div>
 
-    내용: <textarea name="boardContents" cols="30" rows="10"></textarea>
-    <!-- 내용 입력 필드: 게시글 본문을 입력, name 속성은 BoardDTO의 boardContents 필드와 매핑 -->
-    <!-- cols="30" rows="10": 텍스트 영역의 크기를 가로 30자, 세로 10줄로 설정 -->
+        <div class="form-group">
+            <label for="boardWriter">작성자</label>
+            <input type="text" id="boardWriter" name="boardWriter" class="form-control" required>
+        </div>
 
-    파일: <input type="file" name="boardFile" multiple><br>
-    <!-- 파일 업로드 필드: 사용자가 파일을 선택, name 속성은 BoardDTO의 boardFile 리스트와 매핑 -->
-    <!-- multiple: 여러 파일을 동시에 업로드할 수 있게 설정 -->
+        <div class="form-group">
+            <label for="boardPass">비밀번호</label>
+            <input type="password" id="boardPass" name="boardPass" class="form-control" required>
+        </div>
 
-    <input type="submit" value="작성">
-    <!-- 제출 버튼: "작성" 클릭 시 폼 데이터를 "/save"로 전송 -->
-</form>
+        <div class="form-group">
+            <label for="boardContents">내용</label>
+            <textarea id="boardContents" name="boardContents" cols="30" rows="10" class="form-control" required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="boardFile">파일</label>
+            <input type="file" id="boardFile" name="boardFile" multiple>
+        </div>
+
+        <button type="submit" class="btn btn-primary">작성</button>
+
+        <!-- CSRF 토큰 -->
+        <input type="hidden" name="_csrf" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+    </form>
+
+    <footer class="mt-3">
+        <p>&copy; 2025 게시판 애플리케이션</p>
+    </footer>
+</div>
 </body>
 </html>

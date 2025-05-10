@@ -4,6 +4,8 @@ import com.dukefirstboard.board.dto.BoardDTO;
 import com.dukefirstboard.board.dto.BoardFileDTO;
 import com.dukefirstboard.board.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,6 +23,8 @@ public class BoardService {
     // 데이터베이스 작업을 수행하는 BoardRepository 객체.
     // 이 객체를 통해 DB에 데이터를 저장, 조회, 수정, 삭제.
     private final BoardRepository boardRepository;
+    private static final Logger logger = LoggerFactory.getLogger(BoardService.class);
+
 
     // 게시글과 첨부 파일을 저장하는 메서드.
     // 매개변수: BoardDTO (게시글 데이터와 파일 리스트 포함).
@@ -109,4 +113,15 @@ public class BoardService {
         // BoardRepository의 findFile 메서드를 호출해 파일 목록 조회.
         return boardRepository.findFile(id);
     }
+    /**
+     * 카테고리별 게시글 목록을 조회하는 메서드
+     * @param categoryId 카테고리 ID
+     * @return 해당 카테고리의 게시글 목록
+     */
+    public List<BoardDTO> findByCategory(Long categoryId) {
+        logger.debug("카테고리별 게시글 목록 조회: categoryId={}", categoryId);
+        return boardRepository.findByCategory(categoryId);
+    }
+
+
 }

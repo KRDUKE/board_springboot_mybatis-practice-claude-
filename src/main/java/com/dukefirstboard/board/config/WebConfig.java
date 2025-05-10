@@ -12,7 +12,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     // savePath: 실제 파일이 저장된 물리적 경로. "file:///" 접두어를 붙여 로컬 파일 시스템을 가리킴.
     // 현재 설정은 "C:/Users/DUKE/Downloads/testsave" 디렉토리에 파일을 저장하며, 주석 처리된 경로는 이전에 사용했던 경로임.
-    private String savePath = "file:///C:/Users/DUKE/Downloads/testsave";
+    private String savePath = "file:///C:/Users/DUKE/Downloads/testsave/";
 //    private String savePath = "file:///C:/development/intellij_community/spring_upload_files/";
 
     // WebMvcConfigurer 인터페이스의 메서드를 오버라이드하여 정적 자원(파일)을 처리하는 방식을 커스터마이징.

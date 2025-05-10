@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>카테고리 관리</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>카테고리 관리</h1>
+    </header>
+
+    <div class="mb-3">
+        <a href="/" class="btn">홈으로</a>
+        <a href="/board/list" class="btn">게시판으로</a>
+    </div>
+
+    <!-- 새 카테고리 추가 폼 -->
+    <div class="card mb-3">
+        <div class="card-header">
+            <h2>새 카테고리 추가</h2>
+        </div>
+        <div class="card-body">
+            <form action="/category/save" method="post">
+                <div class="form-group">
+                    <label for="categoryName">카테고리 이름</label>
+                    <input type="text" id="categoryName" name="categoryName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="categoryOrder">표시 순서</label>
+                    <input type="number" id="categoryOrder" name="categoryOrder" class="form-control" value="1" required>
+                </div>
+                <button type="submit" class="btn btn-primary">추가</button>
+
+                <!-- CSRF 토큰 -->
+                <input type="hidden" name="_csrf" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            </form>
+        </div>
+    </div>
+
+    <!-- 카테고리 목록 -->
+    <div class="card">
+        <div class="card-header">
+            <h2>카테고리 목록</h2>
+        </div>
+        <div class="card-body">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>카테고리 이름</th>
+                    <th>표시 순서</th>
+                    <th>생성일</th>
+                    <th>수정일</th>
+                    <th>관리</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="category : ${categories}">
+                    <td th:text="${category.categoryId}"></td>
+                    <td th:text="${category.categoryName}"></td>
+                    <td th:text="${category.categoryOrder}"></td>
+                    <td th:text="${category.createdAt}"></td>
+                    <td th:text="${category.updatedAt}"></td>
+                    <td>
+                        <button class="btn btn-warning btn-sm"
+                                th:onclick="'showEditForm(' + ${category.categoryId} + ', \'' + ${category.categoryName} + '\', ' + ${category.categoryOrder} + ')'">
+                            수정
+                        </button>
+                        <a th:href="@{|/category/delete/${category.categoryId}|}"
+                           class="btn btn-danger btn-sm"
+                           onclick="return confirm('정말 삭제하시겠습니까?')">
+                            삭제
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <!-- 카테고리 수정 폼 (초기에는 숨겨져 있음) -->
+            <div id="editForm" style="display: none;" class="mt-3">
+                <h3>카테고리 수정</h3>
+                <form action="/category/update" method="post">
+                    <input type="hidden" id="editCategoryId" name="categoryId">
+                    <div class="form-group">
+                        <label for="editCategoryName">카테고리 이름</label>
+                        <input type="text" id="editCategoryName" name="categoryName" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editCategoryOrder">표시 순서</label>
+                        <input type="number" id="editCategoryOrder" name="categoryOrder" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">저장</button>
+                    <button type="button" class="btn" onclick="hideEditForm()">취소</button>
+
+                    <!-- CSRF 토큰 -->
+                    <input type="hidden" name="_csrf" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer class="mt-3">
+        <p>&copy; 2025 게시판 애플리케이션</p>
+    </footer>
+</div>
+
+<script>
+    // 카테고리 수정 폼을 표시하는 함수
+    function showEditForm(id, name, order) {
+        document.getElementById('editCategoryId').value = id;
+        document.getElementById('editCategoryName').value = name;
+        document.getElementById('editCategoryOrder').value = order;
+        document.getElementById('editForm').style.display = 'block';
+    }
+
+    // 카테고리 수정 폼을 숨기는 함수
+    function hideEditForm() {
+        document.getElementById('editForm').style.display = 'none';
+    }
+</script>
+</body>
+</html>

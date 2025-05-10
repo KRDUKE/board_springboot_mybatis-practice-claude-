@@ -10,17 +10,36 @@
     <!-- parameterType="board": 입력 파라미터는 BoardDTO (mybatis-config.xml에서 "board"로 별칭 설정됨) -->
     <!-- useGeneratedKeys="true" keyProperty="id": DB에서 생성된 id를 BoardDTO의 id 필드에 자동 설정 -->
     <insert id="save" parameterType="board" useGeneratedKeys="true" keyProperty="id">
-        insert into board_table(boardTitle, boardWriter, boardPass, boardContents, fileAttached)
-        values(#{boardTitle}, #{boardWriter}, #{boardPass}, #{boardContents}, #{fileAttached})
+        insert into board_table(boardTitle, boardWriter, boardPass, boardContents, fileAttached, category_id)
+        values(#{boardTitle}, #{boardWriter}, #{boardPass}, #{boardContents}, #{fileAttached}, #{categoryId})
+        <!-- category_id 필드 추가 -->
     </insert>
 
     <!-- 모든 게시글 목록을 조회하는 쿼리 -->
     <!-- id="findAll": BoardRepository.findAll()에서 호출 -->
     <!-- resultType="board": 결과를 BoardDTO로 매핑 -->
     <select id="findAll" resultType="board">
-        select id, boardTitle, boardWriter, boardHits, date_format(createdAt, "%Y-%m-%d") as createdAt
-        from board_table order by id desc
-        <!-- 날짜 형식을 "YYYY-MM-DD"로 변환, 최신 게시글부터 정렬 -->
+        SELECT b.id, b.boardTitle, b.boardWriter, b.boardHits,
+        date_format(b.createdAt, "%Y-%m-%d") as createdAt,
+        b.fileAttached, b.category_id as categoryId,
+        c.category_name as categoryName
+        FROM board_table b
+        LEFT JOIN category c ON b.category_id = c.category_id
+        ORDER BY b.id DESC
+        <!-- 카테고리 정보를 JOIN으로 가져오도록 수정 -->
+    </select>
+
+    <!-- 카테고리별 게시글 목록을 조회하는 쿼리 추가 -->
+    <select id="findByCategory" parameterType="Long" resultType="board">
+        SELECT b.id, b.boardTitle, b.boardWriter, b.boardHits,
+        date_format(b.createdAt, "%Y-%m-%d") as createdAt,
+        b.fileAttached, b.category_id as categoryId,
+        c.category_name as categoryName
+        FROM board_table b
+        LEFT JOIN category c ON b.category_id = c.category_id
+        WHERE b.category_id = #{categoryId}
+        ORDER BY b.id DESC
+        <!-- 특정 카테고리의 게시글만 조회 -->
     </select>
 
     <!-- 게시글 조회수를 증가시키는 쿼리 -->
@@ -36,18 +55,26 @@
     <!-- parameterType="Long": 입력 파라미터는 게시글 ID -->
     <!-- resultType="board": 결과를 BoardDTO로 매핑 -->
     <select id="findById" parameterType="Long" resultType="board">
-        select id, boardTitle, boardWriter, boardPass, boardContents, boardHits,
-        date_format(createdAt, "%Y-%m-%d %H:%i:%s") as createdAt, fileAttached
-        from board_table where id=#{id}
-        <!-- 상세 정보에 필요한 모든 필드를 조회, 날짜는 "YYYY-MM-DD HH:MM:SS" 형식으로 변환 -->
+        SELECT b.id, b.boardTitle, b.boardWriter, b.boardPass, b.boardContents, b.boardHits,
+        date_format(b.createdAt, "%Y-%m-%d %H:%i:%s") as createdAt,
+        b.fileAttached, b.category_id as categoryId,
+        c.category_name as categoryName
+        FROM board_table b
+        LEFT JOIN category c ON b.category_id = c.category_id
+        WHERE b.id = #{id}
+        <!-- 카테고리 정보를 JOIN으로 가져오도록 수정 -->
     </select>
 
     <!-- 게시글을 수정하는 쿼리 -->
     <!-- id="update": BoardRepository.update()에서 호출 -->
     <!-- parameterType 생략: BoardDTO가 기본적으로 사용됨 -->
     <update id="update">
-        update board_table set boardTitle=#{boardTitle}, boardContents=#{boardContents} where id=#{id}
-        <!-- 제목과 내용을 업데이트, id로 특정 레코드 식별 -->
+        UPDATE board_table
+        SET boardTitle = #{boardTitle},
+        boardContents = #{boardContents},
+        category_id = #{categoryId}
+        WHERE id = #{id}
+        <!-- 카테고리 ID도 업데이트할 수 있도록 수정 -->
     </update>
 
     <!-- 게시글을 삭제하는 쿼리 -->
