@@ -151,11 +151,10 @@ public class BoardController {
 
         logger.debug("게시글 수정 요청: {}", boardDTO);
 
-        // 기존 게시글 조회
-        BoardDTO existingBoard = boardService.findById(id);
+        // 비밀번호 확인 로직을 서비스로 이동
+        boolean isPasswordValid = boardService.verifyPassword(id, inputPassword);
 
-        // 비밀번호 확인
-        if (!existingBoard.getBoardPass().equals(inputPassword)) {
+        if (!isPasswordValid) {
             redirectAttributes.addFlashAttribute("passwordError", "비밀번호가 일치하지 않습니다.");
             return "redirect:/board/update/" + id;
         }
@@ -173,20 +172,21 @@ public class BoardController {
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable("id") Long id,
                          @RequestParam(required = false) String boardPass,
+                         Model model,
                          RedirectAttributes redirectAttributes) {
 
         logger.debug("게시글 삭제 요청: id={}", id);
 
         // 비밀번호가 제공되지 않았다면 비밀번호 확인 페이지로 이동
         if (boardPass == null || boardPass.isEmpty()) {
+            model.addAttribute("id", id);
             return "password-confirm";
         }
 
-        // 게시글 조회
-        BoardDTO board = boardService.findById(id);
+        // 비밀번호 확인 로직을 서비스로 이동
+        boolean isPasswordValid = boardService.verifyPassword(id, boardPass);
 
-        // 비밀번호 확인
-        if (!board.getBoardPass().equals(boardPass)) {
+        if (!isPasswordValid) {
             redirectAttributes.addFlashAttribute("passwordError", "비밀번호가 일치하지 않습니다.");
             return "redirect:/board/" + id;
         }

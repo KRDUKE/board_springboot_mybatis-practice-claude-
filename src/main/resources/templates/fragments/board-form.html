@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- 게시글 폼 fragment -->
+<div th:fragment="form (action, submitText, board)">
+    <form th:action="${action}" method="post" enctype="multipart/form-data">
+        <!-- 필요시 id 필드 추가 -->
+        <input th:if="${board != null}" type="hidden" name="id" th:value="${board.id}">
+
+        <!-- 카테고리 선택 -->
+        <div class="form-group">
+            <label for="categoryId">카테고리</label>
+            <select id="categoryId" name="categoryId" class="form-control" required>
+                <option value="">카테고리 선택</option>
+                <option th:each="category : ${categories}"
+                        th:value="${category.categoryId}"
+                        th:text="${category.categoryName}"
+                        th:selected="${board != null && category.categoryId == board.categoryId}">
+                </option>
+            </select>
+        </div>
+
+        <!-- 기본 필드들 -->
+        <div class="form-group">
+            <label for="boardTitle">제목</label>
+            <input type="text" id="boardTitle" name="boardTitle" class="form-control" required
+                   th:value="${board != null ? board.boardTitle : ''}">
+        </div>
+
+        <div class="form-group">
+            <label for="boardWriter">작성자</label>
+            <input type="text" id="

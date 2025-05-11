@@ -52,3 +52,7 @@ logging:
     file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"  # 파일 로그 패턴
   file:
     name: logs/application.log  # 로그 파일 위치
+
+# 파일 업로드 경로 설정 (추가)
+file:
+  upload-dir: C:/Users/DUKE/Downloads/testsave/
