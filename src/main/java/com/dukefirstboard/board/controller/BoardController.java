@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.util.List;
@@ -142,8 +143,24 @@ public class BoardController {
      * 게시글을 수정하는 메서드
      */
     @PostMapping("/update/{id}")
-    public String update(BoardDTO boardDTO, Model model) {
+    public String update(@PathVariable("id") Long id,
+                         @ModelAttribute BoardDTO boardDTO,
+                         @RequestParam("boardPass") String inputPassword,
+                         Model model,
+                         RedirectAttributes redirectAttributes) {
+
         logger.debug("게시글 수정 요청: {}", boardDTO);
+
+        // 기존 게시글 조회
+        BoardDTO existingBoard = boardService.findById(id);
+
+        // 비밀번호 확인
+        if (!existingBoard.getBoardPass().equals(inputPassword)) {
+            redirectAttributes.addFlashAttribute("passwordError", "비밀번호가 일치하지 않습니다.");
+            return "redirect:/board/update/" + id;
+        }
+
+        // 비밀번호가 일치하면 업데이트 진행
         boardService.update(boardDTO);
         BoardDTO dto = boardService.findById(boardDTO.getId());
         model.addAttribute("board", dto);
@@ -154,8 +171,27 @@ public class BoardController {
      * 게시글을 삭제하는 메서드
      */
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Long id) {
+    public String delete(@PathVariable("id") Long id,
+                         @RequestParam(required = false) String boardPass,
+                         RedirectAttributes redirectAttributes) {
+
         logger.debug("게시글 삭제 요청: id={}", id);
+
+        // 비밀번호가 제공되지 않았다면 비밀번호 확인 페이지로 이동
+        if (boardPass == null || boardPass.isEmpty()) {
+            return "password-confirm";
+        }
+
+        // 게시글 조회
+        BoardDTO board = boardService.findById(id);
+
+        // 비밀번호 확인
+        if (!board.getBoardPass().equals(boardPass)) {
+            redirectAttributes.addFlashAttribute("passwordError", "비밀번호가 일치하지 않습니다.");
+            return "redirect:/board/" + id;
+        }
+
+        // 비밀번호가 일치하면 삭제 진행
         boardService.delete(id);
         return "redirect:/board/list";
     }

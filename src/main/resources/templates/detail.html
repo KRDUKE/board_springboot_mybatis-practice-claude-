@@ -7,6 +7,8 @@
 </head>
 <body>
 <div class="container">
+    <!-- 공통 헤더 포함 -->
+    <div th:replace="~{fragments/header :: header}"></div>
     <header>
         <!-- 카테고리 정보 추가 -->
         <div class="category-label" th:if="${board.categoryName != null}">
@@ -19,6 +21,11 @@
             조회수: <span th:text="${board.boardHits}">0</span>
         </div>
     </header>
+
+    <!-- 비밀번호 오류 메시지 표시 추가 -->
+    <div th:if="${passwordError}" class="alert alert-danger">
+        <p th:text="${passwordError}"></p>
+    </div>
 
     <div class="board-content" th:text="${board.boardContents}">
         게시글 내용이 여기에 표시됩니다.
@@ -36,7 +43,7 @@
     <div class="board-buttons">
         <button onclick="listReq()" class="btn">목록</button>
         <button onclick="updateReq()" class="btn btn-warning">수정</button>
-        <button onclick="deleteReq()" class="btn btn-danger">삭제</button>
+        <a th:href="@{|/board/delete/${board.id}|}" class="btn btn-danger">삭제</a>
     </div>
 
     <footer class="mt-3">
@@ -59,8 +66,6 @@
         location.href = `/board/update/[[${board.id}]]`;
     }
 
-    const deleteReq = () => {
-        location.href = `/board/delete/[[${board.id}]]`;
-    }
+    // 삭제 버튼 함수는 더 이상 필요하지 않음 (링크로 변경)
 </script>
 </html>

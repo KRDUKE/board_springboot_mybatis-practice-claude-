@@ -7,6 +7,8 @@
 </head>
 <body>
 <div class="container">
+    <!-- 공통 헤더 포함 -->
+    <div th:replace="~{fragments/header :: header}"></div>
     <header>
         <h1>게시글 목록</h1>
         <!-- 선택된 카테고리가 있으면 표시 -->
@@ -95,40 +97,50 @@
     </table>
 
     <!-- 페이지네이션 추가 -->
+    <!-- 페이지네이션 추가 -->
     <div th:if="${page != null}" class="pagination-container">
         <ul class="pagination">
             <!-- 이전 페이지 그룹으로 이동 -->
             <li th:if="${page.prev}">
-                <a th:href="@{${#httpServletRequest.requestURI}(
-                    page=${page.startPage - 1},
-                    size=${page.size},
-                    searchType=${searchType},
-                    searchKeyword=${searchKeyword},
-                    categoryId=${selectedCategoryId}
-                )}">&laquo;</a>
+                <!-- 검색인 경우 -->
+                <a th:if="${searchType != null}"
+                   th:href="@{/board/search(page=${page.startPage - 1}, size=${page.size}, searchType=${searchType}, searchKeyword=${searchKeyword}, categoryId=${selectedCategoryId})}">&laquo;</a>
+                <!-- 카테고리인 경우 -->
+                <a th:if="${category != null}"
+                   th:href="@{/board/category/{id}(id=${category.categoryId}, page=${page.startPage - 1}, size=${page.size})}">&laquo;</a>
+                <!-- 일반 목록인 경우 -->
+                <a th:if="${searchType == null and category == null}"
+                   th:href="@{/board/list(page=${page.startPage - 1}, size=${page.size})}">&laquo;</a>
             </li>
 
             <!-- 페이지 번호 -->
             <li th:each="pageNum : ${#numbers.sequence(page.startPage, page.endPage)}"
                 th:class="${pageNum == page.page ? 'active' : ''}">
-                <a th:href="@{${#request.requestURI}(
-                    page=${pageNum},
-                    size=${page.size},
-                    searchType=${searchType},
-                    searchKeyword=${searchKeyword},
-                    categoryId=${selectedCategoryId}
-                )}" th:text="${pageNum}"></a>
+                <!-- 검색인 경우 -->
+                <a th:if="${searchType != null}"
+                   th:href="@{/board/search(page=${pageNum}, size=${page.size}, searchType=${searchType}, searchKeyword=${searchKeyword}, categoryId=${selectedCategoryId})}"
+                   th:text="${pageNum}"></a>
+                <!-- 카테고리인 경우 -->
+                <a th:if="${category != null}"
+                   th:href="@{/board/category/{id}(id=${category.categoryId}, page=${pageNum}, size=${page.size})}"
+                   th:text="${pageNum}"></a>
+                <!-- 일반 목록인 경우 -->
+                <a th:if="${searchType == null and category == null}"
+                   th:href="@{/board/list(page=${pageNum}, size=${page.size})}"
+                   th:text="${pageNum}"></a>
             </li>
 
             <!-- 다음 페이지 그룹으로 이동 -->
             <li th:if="${page.next}">
-                <a th:href="@{${#httpServletRequest.requestURI}(
-                    page=${page.endPage + 1},
-                    size=${page.size},
-                    searchType=${searchType},
-                    searchKeyword=${searchKeyword},
-                    categoryId=${selectedCategoryId}
-                )}">&raquo;</a>
+                <!-- 검색인 경우 -->
+                <a th:if="${searchType != null}"
+                   th:href="@{/board/search(page=${page.endPage + 1}, size=${page.size}, searchType=${searchType}, searchKeyword=${searchKeyword}, categoryId=${selectedCategoryId})}">&raquo;</a>
+                <!-- 카테고리인 경우 -->
+                <a th:if="${category != null}"
+                   th:href="@{/board/category/{id}(id=${category.categoryId}, page=${page.endPage + 1}, size=${page.size})}">&raquo;</a>
+                <!-- 일반 목록인 경우 -->
+                <a th:if="${searchType == null and category == null}"
+                   th:href="@{/board/list(page=${page.endPage + 1}, size=${page.size})}">&raquo;</a>
             </li>
         </ul>
     </div>

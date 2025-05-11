@@ -1,8 +1,13 @@
 package com.dukefirstboard.board.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.mvc.method.annotation.ServletRequestMethodArgumentResolver;
+import org.springframework.web.servlet.mvc.method.annotation.ServletResponseMethodArgumentResolver;
+
+import java.util.List;
 
 // @Configuration: 이 클래스가 Spring의 설정 클래스임을 나타냄. 애플리케이션 시작 시 Spring이 이 클래스를 읽어 설정을 적용함.
 @Configuration
@@ -25,4 +30,12 @@ public class WebConfig implements WebMvcConfigurer {
                 // 실제 파일이 저장된 디렉토리를 지정. Spring이 이 경로에서 파일을 읽어 뷰로 제공.
                 .addResourceLocations(savePath);
     }
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+        argumentResolvers.add(new ServletRequestMethodArgumentResolver());
+        argumentResolvers.add(new ServletResponseMethodArgumentResolver());
+    }
+
+    // templateResolver와 templateEngine Bean 정의를 제거
 }
